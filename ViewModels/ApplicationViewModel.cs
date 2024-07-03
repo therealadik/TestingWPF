@@ -6,28 +6,93 @@ using Testing.Views;
 
 namespace Testing.ViewModels
 {
-    internal class ApplicationViewModel : BaseViewModel
+    /// <summary>
+    /// Модель представления для приложения, которая управляет коллекцией элементов.
+    /// и командами для добавления и открытия документов и задач.
+    /// </summary>
+    internal sealed class ApplicationViewModel
     {
-        // Коллекция для хранения элементов типа DocumentViewModel и TaskViewModel
+        #region Поля и свойства
+        /// <summary>
+        /// Коллекция для хранения элементов типа DocumentViewModel и AppTaskViewModel.
+        /// </summary>
         public ObservableCollection<object> Items { get; set; }
 
-        private object selectedItem;
+        /// <summary>
+        /// Комманда для добавления документа.
+        /// </summary>
+        public ICommand AddDocumentCommand { get; set; }
 
-        public object SelectedItem
+        /// <summary>
+        /// Команда для добавления задачи.
+        /// </summary>
+        public ICommand AddTaskCommand { get; set; }
+
+        /// <summary>
+        /// Команда открытия элемента.
+        /// </summary>
+        public ICommand OpenItemCommand { get; set; }
+        #endregion Поля и свойства
+
+        #region Методы
+        /// <summary>
+        /// Создание начальных обьектов в приложении.
+        /// </summary>
+        private void GenerateExample()
         {
-            get => selectedItem;
-            set
-            {
-                selectedItem = value;
-                OnPropertyChanged();
-            }
+            Items =
+            [
+                new DocumentViewModel(new Document(1,"Оформление кода.doc")),
+                new DocumentViewModel(new Document(2, "Список задач.doc")),
+                new DocumentViewModel(new Document(3, "Заказы.doc")),
+
+                new AppTaskViewModel(new AppTask(4, "Оформи код")),
+                new AppTaskViewModel(new AppTask(5,  "Посмотри задачи")),
+                new AppTaskViewModel(new AppTask(6,"Выполни заказы"))
+            ];
         }
 
-        // команды для добавления документов и задач
-        public ICommand AddDocumentCommand { get; set; }
-        public ICommand AddTaskCommand { get; set; }
-        public ICommand OpenItemCommand { get; set; }
+        /// <summary>
+        /// Добавление документа.
+        /// </summary>
+        private void AddDocument()
+        {
+            var newDocument = new DocumentViewModel(new Document(Items.Count + 1, "New Document"));
+            this.Items.Add(newDocument);
+        }
 
+        /// <summary>
+        /// Добавление задачи.
+        /// </summary>
+        private void AddTask()
+        {
+            var newTask = new AppTaskViewModel(new AppTask(Items.Count + 1, "New Task"));
+            this.Items.Add(newTask);
+        }
+
+        /// <summary>
+        /// Открыть элемент.
+        /// </summary>
+        /// <param name="item">Открываемый элемент.</param>
+        private void OpenItem(object item)
+        {
+            if (item is DocumentViewModel documentViewModel)
+            {
+                var documentView = new DocumentView { DataContext = documentViewModel };
+                documentView.ShowDialog();
+            }
+            else if (item is AppTaskViewModel appTaskViewModel)
+            {
+                var appTaskView = new AppTaskView { DataContext = appTaskViewModel };
+                appTaskView.ShowDialog();
+            }
+        } 
+        #endregion Методы
+
+        #region Конструктор
+        /// <summary>
+        /// Конструктор с генерацией элементов и привязкой команд.
+        /// </summary>
         public ApplicationViewModel()
         {
             GenerateExample();
@@ -36,53 +101,6 @@ namespace Testing.ViewModels
             this.AddTaskCommand = new RelayCommand(_ => AddTask());
             this.OpenItemCommand = new RelayCommand(OpenItem);
         }
-
-        private void GenerateExample()
-        {
-            Items =
-            [
-                new DocumentViewModel(new Document(id: 1, name: "Оформление кода.doc")),
-                new DocumentViewModel(new Document(id: 2, name: "Список задач.doc")),
-                new DocumentViewModel(new Document(id: 3, name: "Заказы.doc")),
-
-                new AppTaskViewModel(new AppTask(id: 4, name: "Оформи код")),
-                new AppTaskViewModel(new AppTask(id: 5, name: "Посмотри задачи")),
-                new AppTaskViewModel(new AppTask(id: 6, name: "Выполни заказы"))
-            ];
-        }
-
-        private void AddDocument()
-        {
-            var newDocument = new DocumentViewModel(new Document(id: Items.Count + 1, name: "New Document"));
-            this.Items.Add(newDocument); // Добавление нового документа в коллекцию
-        }
-
-        private void AddTask()
-        {
-            var newTask = new AppTaskViewModel(new AppTask(id: Items.Count + 1, name: "New Task"));
-            this.Items.Add(newTask); // Добавление новой задачи в коллекцию
-        }
-
-        private void OpenItem(object item)
-        {
-            if (item is DocumentViewModel documentViewModel)
-            {
-                var documentView = new DocumentView
-                {
-                    DataContext = documentViewModel
-                };
-
-                documentView.ShowDialog();
-            }
-            else if (item is AppTaskViewModel appTaskViewModel)
-            {
-                var appTaskView = new AppTaskView
-                {
-                    DataContext = appTaskViewModel
-                };
-
-                appTaskView.ShowDialog();
-            }
-        }
+        #endregion Конструктор
     }
 }

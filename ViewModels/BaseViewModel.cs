@@ -7,7 +7,7 @@ namespace Testing.ViewModels
     /// Базовый класс для ViewModel с реализацией INotifyPropertyChanged.
     /// </summary>
 
-    internal class BaseViewModel : INotifyPropertyChanged
+    internal abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

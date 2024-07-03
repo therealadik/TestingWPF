@@ -1,7 +1,7 @@
 ﻿namespace Testing.Models
 {
     /// <summary>
-    /// Модель для представления задач.
+    /// Перечисления статусов выполнения задачи.
     /// </summary>
     public enum AppTaskState
     {
@@ -9,14 +9,24 @@
         Completed
     }
 
-    internal class AppTask: BaseModel
+    /// <summary>
+    /// Модель для представления задач.
+    /// </summary>
+    internal sealed class AppTask : BaseModel
     {
-        public AppTaskState State { get; set; }
+        #region Поля и свойства
 
-        public AppTask(int id, string name, AppTaskState state = AppTaskState.InProgress) : base(id, name)
+        /// <summary>
+        /// Статус выполнения задачи.
+        /// </summary>
+        public AppTaskState State { get; set; } = AppTaskState.InProgress;
+        #endregion Поля и свойства
+
+        #region Конструктор
+        public AppTask(int id, string name) : base(id, name)
         {
             this.Type = ModelType.Задача;
-            this.State = state;
         }
+        #endregion Конструктор
     }
 }

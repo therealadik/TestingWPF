@@ -3,22 +3,31 @@ using Testing.Models;
 
 namespace Testing.ViewModels
 {
-    internal class AppTaskViewModel : BaseViewModel
+    /// <summary>
+    /// ViewModel класс для AppTask модели.
+    /// </summary>
+    internal sealed class AppTaskViewModel : BaseViewModel
     {
-        public ObservableCollection<AppTaskState> States { get; set; }
+        #region Поля и свойства
+        /// <summary>
+        /// Список состояний задачи.
+        /// </summary>
+        public ObservableCollection<AppTaskState> States { get; set; } = [AppTaskState.InProgress, AppTaskState.Completed];
 
+        /// <summary>
+        /// Привязанная задача.
+        /// </summary>
         private AppTask appTask;
 
-        public AppTaskViewModel(AppTask task)
-        {
-            this.appTask = task;
-            States = [AppTaskState.InProgress, AppTaskState.Completed];
-        }
-
         public int Id => appTask.Id;
+
         public string Name
         {
-            get => appTask.Name;
+            get
+            {
+                return appTask.Name;
+            }
+
             set
             {
                 if (appTask.Name != value)
@@ -29,14 +38,18 @@ namespace Testing.ViewModels
             }
         }
 
-        public string Type
-        {
-            get => appTask.Type.ToString();
-        }
+        /// <summary>
+        /// Тип модели (Задача или документ).
+        /// </summary>
+        public string Type => appTask.Type.ToString();
 
         public string Body
         {
-            get => appTask.Body;
+            get
+            {
+                return appTask.Body;
+            }
+
             set
             {
                 if (appTask.Body != value)
@@ -49,7 +62,11 @@ namespace Testing.ViewModels
 
         public AppTaskState State
         {
-            get => appTask.State;
+            get
+            {
+                return appTask.State;
+            }
+
             set
             {
                 if (appTask.State != value)
@@ -59,5 +76,17 @@ namespace Testing.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region Конструктор
+
+        /// <summary>
+        /// </summary>
+        /// <param name="task">Привязанная задача./param>
+        public AppTaskViewModel(AppTask task)
+        {
+            this.appTask = task;
+        }
+        #endregion Конструктор
     }
 }
